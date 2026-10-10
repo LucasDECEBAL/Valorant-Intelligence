@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String?
+  createdAt    DateTime       @default(now())
+  profile      PlayerProfile?
+  matches      Match[]
+  goals        TrainingGoal[]
+}
+
+model PlayerProfile {
+  id          String @id @default(cuid())
+  userId      String @unique
+  displayName String
+  rank        String?
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Match {
+  id       String   @id @default(cuid())
+  userId   String
+  map      String
+  agent    String
+  mode     String
+  date     DateTime
+  win      Boolean
+  kills    Int
+  deaths   Int
+  assists  Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model TrainingGoal {
+  id        String  @id @default(cuid())
+  userId    String
+  title     String
+  metric    String?
+  target    Float?
+  completed Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
