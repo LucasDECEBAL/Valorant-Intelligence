@@ -1,1 +1,5 @@
-import Link from 'next/link'; import {matches} from '@/lib/demo'; import {aggregate} from '@/lib/analytics'; export default function Stats(){const s=aggregate(matches);return <main className="simple-page"><Link href="/dashboard" className="back">← Tableau de bord</Link><span className="eyebrow">ANALYTIQUE</span><h1>Mes statistiques</h1><p className="muted">Calculs reproductibles sur les données fictives du mode démo.</p><div className="stat-strip"><b>{s.kd}<small>K/D agrégé</small></b><b>{s.winRate}%<small>Winrate</small></b><b>{s.avgKills}<small>Éliminations moy.</small></b><b>{s.matches}<small>Matchs analysés</small></b></div><div className="card"><h2>Formule</h2><p>K/D = éliminations totales ÷ morts totales. Le winrate = victoires ÷ matchs × 100. Les ratios individuels ne sont pas moyennés.</p></div></main>}
+import { redirect } from 'next/navigation';
+
+export default function Page() {
+  redirect('/dashboard');
+}
