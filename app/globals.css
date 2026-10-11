@@ -164,7 +164,9 @@ th.sortable:hover{color:#fff}
 .detail-panel p,.detail-panel li{color:#c3ccda;font-size:13px;line-height:1.6}
 .detail-panel ul{padding-left:20px;margin:16px 0}
 .detail-panel>small{color:var(--muted);font-size:11px}
-.detail-close{position:absolute;right:14px;top:12px;background:none;border:0;color:#c3ccda;font-size:26px;cursor:pointer}
+.detail-close{position:absolute;right:14px;top:12px;width:44px;height:44px;padding:0;background:none;border:0;color:#c3ccda;font-size:26px;line-height:1;cursor:pointer}
+.table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-scroll table{min-width:520px}
 .demo-auth-notice{margin:24px 0;padding:18px;color:#e8edf5}
 .demo-auth-notice p{color:var(--muted);font-size:13px;margin-bottom:0}
 @keyframes growH{from{transform:scaleY(0)}}
@@ -229,6 +231,15 @@ th.sortable:hover{color:#fff}
   .sidebar nav button .badge{display:none}
   .search-wrap{max-width:none}
   .chat{height:460px}
+  .donut-wrap{flex-direction:column;align-items:stretch;gap:18px}
+  .donut-box{width:min(200px,100%);height:auto;aspect-ratio:1;margin:0 auto}
+  .donut-box canvas{display:block}
+  .legend-list{width:100%;min-width:0}
+  .legend-list div{min-width:0;overflow-wrap:anywhere}
+  .sidebar nav button{min-height:44px;padding:10px 8px}
+  .bell{min-width:44px;min-height:44px;padding:10px}
+  .who{min-height:44px;padding:4px 8px}
+  .detail-close{right:8px;top:8px}
 }
 /* =====================================================
    PAGE CONNEXION

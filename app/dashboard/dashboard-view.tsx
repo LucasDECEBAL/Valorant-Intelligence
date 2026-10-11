@@ -313,7 +313,7 @@ export default function DashboardView() {
               <div className="grid two" style={{ marginTop: 18 }}>
                 <Reveal className="card match-history">
                   <div className="card-head"><h2>Historique des matchs</h2><button className="link" onClick={() => go('matchs')}>Tout voir →</button></div>
-                  <table><thead><tr><th>Date</th><th>Carte</th><th>Agent</th><th>Résultat</th><th>K / D</th></tr></thead><Rows rows={D.matches.slice(0, 5)} /></table>
+                  <div className="table-scroll"><table><thead><tr><th>Date</th><th>Carte</th><th>Agent</th><th>Résultat</th><th>K / D</th></tr></thead><Rows rows={D.matches.slice(0, 5)} /></table></div>
                 </Reveal>
                 <Reveal className="card" delay={80}>
                   <div className="card-head"><h2>Agents adaptés à ton style</h2></div>
@@ -358,7 +358,7 @@ export default function DashboardView() {
               <div className="card">
                 <div className="card-head"><h2>{tableRows.length} parties</h2>
                   <div className="chips">{['all', 'Victoire', 'Défaite'].map(f => <button key={f} className={'chip' + (filter === f ? ' on' : '')} onClick={() => setFilter(f)}>{f === 'all' ? 'Tous' : f}</button>)}</div></div>
-                <table><thead><tr><Th i={0}>Date</Th><Th i={1}>Carte</Th><Th i={2}>Agent</Th><Th i={3}>Résultat</Th><Th i={4}>K / D</Th></tr></thead><Rows rows={tableRows} /></table>
+                <div className="table-scroll"><table><thead><tr><Th i={0}>Date</Th><Th i={1}>Carte</Th><Th i={2}>Agent</Th><Th i={3}>Résultat</Th><Th i={4}>K / D</Th></tr></thead><Rows rows={tableRows} /></table></div>
               </div>
             </section>}
 
