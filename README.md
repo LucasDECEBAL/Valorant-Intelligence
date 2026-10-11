@@ -25,10 +25,10 @@ Ouvrir http://localhost:3000. Le dashboard fonctionne en mode démo sans Postgre
 `npm run typecheck`, `npm run lint`, `npm run build`, `npm test`.
 
 ## Données et sécurité
-Les statistiques affichées en mode démo sont fictives et identifiées. Les mots de passe ne sont pas encore persistés dans cette première tranche : la page de connexion est un écran préparatoire; brancher Auth.js Credentials avec hash Argon2/bcrypt avant production. Toute requête privée doit être autorisée côté serveur. Ne jamais mettre une clé Riot dans le frontend.
+Les statistiques affichées en mode démo sont fictives et identifiées. La démo publique ne requiert ni compte utilisateur ni base PostgreSQL; la page de connexion reste une interface préparatoire. Ne jamais exposer une clé Riot ou un autre secret côté client.
 
-## Déploiement
-Sur Vercel, définir `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET` et éventuellement `RIOT_API_KEY`, connecter un PostgreSQL hébergé, puis exécuter `npx prisma migrate deploy` et `npm run prisma:seed` depuis un environnement contrôlé. Prévoir sauvegardes, logs sans secrets, revue RGPD et validation des accès Riot avant activation.
+## Déploiement Vercel — démo publique
+Importer le dépôt dans Vercel et utiliser les commandes npm par défaut (`npm install`, `npm run build`). Aucun PostgreSQL ni secret d'authentification n'est requis pour le mode démo. Définir `DATA_PROVIDER=mock` dans les variables d'environnement Vercel ou laisser la valeur par défaut. Ne pas configurer `RIOT_API_KEY` pour cette version; sa présence ne sélectionne pas le fournisseur Riot. Ne lancer ni migration Prisma ni seed pour ce déploiement. Prisma, PostgreSQL, le schéma et les migrations restent disponibles pour une évolution ultérieure.
 
 ## Structure
 `app/` pages, `lib/` analytics/coach/demo, `services/` fournisseurs, `prisma/` schéma/seed, `tests/` unitaires.
