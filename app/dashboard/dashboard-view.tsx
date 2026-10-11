@@ -247,7 +247,6 @@ export default function DashboardView() {
               </nav>
               <div className="nav-label demo-nav-label">Parcours démo</div>
               <nav>
-                <Link href="/profil"><span className="nav-icon">◉</span>Mon profil</Link>
                 <Link href="/rechercher"><span className="nav-icon">⌕</span>Rechercher un joueur</Link>
               </nav>
             </aside>
@@ -271,7 +270,6 @@ export default function DashboardView() {
           </nav>
           <div className="nav-label demo-nav-label">Parcours démo</div>
           <nav>
-            <Link href="/profil"><span className="nav-icon">◉</span>Mon profil</Link>
             <Link href="/rechercher"><span className="nav-icon">⌕</span>Rechercher un joueur</Link>
           </nav>
           <div className="quote">« Les chiffres ne mentent pas, mais ils ne jouent pas à ta place. »</div>
@@ -295,16 +293,10 @@ export default function DashboardView() {
                   <b>Exemples de notifications fictives</b>
                   <p>🏆 Nouveau record de K/D sur Bind</p><p>📈 +12 RR cette semaine</p><p>🤖 Ton coach a un nouveau conseil</p>
                 </div>)}
-              <div className="who" onClick={() => setMenu(menu === 'user' ? null : 'user')}>
+              <button type="button" className="who" onClick={() => go('profil')} aria-label={`Ouvrir le profil de ${player.riotId}`}>
                 <div className="avatar">AZ</div>
                 <div><b>{player.riotId}</b><small>{player.rank}</small></div>
-              </div>
-              {menu === 'user' && (
-                <div className="dropdown right">
-                  <button onClick={() => go('profil')}>Profil de démonstration</button>
-                  <button onClick={() => go('params')}>Paramètres</button>
-                  <Link href="/">Quitter la démo</Link>
-                </div>)}
+              </button>
             </div>
           </header>
 

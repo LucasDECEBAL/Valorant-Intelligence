@@ -10,7 +10,6 @@ export default function Home() {
       <nav className="landing-nav">
         <Link href="/" className="landing-brand"><Image src={logoMark} alt="" /> <span>VALORANT<br />INTELLIGENCE</span></Link>
         <div className="landing-nav-actions">
-          <Link href="/profil" className="landing-nav-link">Mon profil</Link>
           <Link href="/rechercher" className="landing-nav-link">Rechercher un joueur</Link>
           <Link href="/dashboard" className="button landing-demo">Essayer la démo →</Link>
         </div>
@@ -27,7 +26,6 @@ export default function Home() {
           <p>Une lecture claire de tes performances VALORANT pour identifier tes leviers de progression, match après match.</p>
           <div className="hero-actions">
             <Link href="/dashboard" className="button big">Explorer le tableau de bord</Link>
-            <Link href="/profil" className="button ghost big">Mon profil · Démo</Link>
             <Link href="/rechercher" className="button ghost big">Rechercher un joueur</Link>
           </div>
         </div>
