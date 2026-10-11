@@ -229,7 +229,10 @@ export default function DashboardView() {
           <div className="mobile-nav-backdrop" onClick={() => setMobileNav(false)}>
             <aside className="mobile-nav" aria-label="Navigation mobile" onClick={e => e.stopPropagation()}>
               <div className="mobile-nav-head">
-                <span className="nav-label">Navigation</span>
+                <Link href="/" className="mobile-nav-brand">
+                  <Image src={logoMark} alt="" />
+                  <span>VALORANT<br />INTELLIGENCE</span>
+                </Link>
                 <button className="mobile-nav-close" aria-label="Fermer le menu" onClick={() => setMobileNav(false)}>×</button>
               </div>
               <nav>

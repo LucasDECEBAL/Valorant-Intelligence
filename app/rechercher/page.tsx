@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { demoPlayers, findDemoPlayer } from '../../services/demo-player-data';
+import logoMark from '../../images/valorant_intelligence1.png';
 
 const riotIdPattern = /^[^#\s]{1,16}#[A-Za-z0-9]{2,5}$/;
 
@@ -33,7 +35,7 @@ export default function SearchPlayerPage() {
   return (
     <main className="demo-page">
       <header className="demo-page-nav">
-        <Link href="/" className="landing-brand"><span>VALORANT<br />INTELLIGENCE</span></Link>
+        <Link href="/" className="landing-brand"><Image src={logoMark} alt="" /><span>VALORANT<br />INTELLIGENCE</span></Link>
         <nav><Link href="/dashboard">Tableau de bord</Link></nav>
       </header>
       <div className="demo-page-content">
