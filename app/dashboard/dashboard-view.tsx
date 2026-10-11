@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { LineChart, Donut, DmgChart } from './charts';
 import * as D from './dashboard-data';
 import type { PageId } from './dashboard-data';
+import SiteFooter from '../site-footer';
 
 /* ---------- petits utilitaires ---------- */
 function Count({ to, dec = 0, suffix = '' }: { to: number; dec?: number; suffix?: string }) {
@@ -483,7 +484,7 @@ export default function DashboardView() {
               </div>
             </section>}
 
-            <footer>Données de démonstration fictives · Projet indépendant, non affilié à Riot Games.</footer>
+            <SiteFooter note="Données de démonstration fictives · Projet indépendant, non affilié à Riot Games." />
           </div>
         </div>
       </div>

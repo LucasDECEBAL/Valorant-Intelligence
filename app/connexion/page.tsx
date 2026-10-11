@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import SiteFooter from '../site-footer';
 
 export default function Connexion() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -76,6 +77,7 @@ export default function Connexion() {
           <div className="auth-quote">« Les chiffres ne mentent pas, mais ils ne jouent pas à ta place. »</div>
         </section>
       </div>
+      <SiteFooter note="Démonstration publique · aucune authentification. Exploitant en nom personnel : Lucas DÉCÉBAL-DANGER." />
     </main>
   );
 }

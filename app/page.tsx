@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import SiteFooter from './site-footer';
 
 export default function Home() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -77,7 +78,7 @@ export default function Home() {
         <article><strong>02</strong><h2>Progresser</h2><p>Un coach à règles transparentes, basé sur tes données.</p></article>
         <article><strong>03</strong><h2>Répéter</h2><p>Des objectifs concrets pour structurer tes sessions.</p></article>
       </section>
-      <footer>Valorant Intelligence est un projet indépendant, non affilié à Riot Games.</footer>
+      <SiteFooter note="Valorant Intelligence est un projet indépendant, non affilié à Riot Games." />
     </main>
   );
 }
