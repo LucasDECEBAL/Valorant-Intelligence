@@ -264,11 +264,11 @@ th.sortable:hover{color:#fff}
 @media(min-width:721px){.mobile-nav-toggle{display:none}}
 
 @media(max-width:700px){
-  .hero-visual{height:400px;overflow:hidden}
+  .landing .hero-visual{height:430px;overflow:hidden}
   .stat-kd{width:min(220px,86%);height:142px;left:0;top:8px;padding:16px 14px}
   .stat-kd strong{font-size:31px}
   .stat-kd svg{height:52px;margin-top:9px}
-  .stat-win{width:min(155px,60%);height:100px;right:0;top:157px;padding:14px}
+  .stat-win{width:min(155px,60%);height:100px;right:0;top:172px;padding:14px}
   .stat-win .ring{width:60px;height:60px}
   .stat-match{width:min(185px,72%);height:102px;left:12%;bottom:0;padding:14px}
   .stat-match strong{font-size:17px}
