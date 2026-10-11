@@ -7,12 +7,12 @@ export default function PrivacyPage() {
   return (
     <main className="legal-page">
       <Link className="legal-back" href="/">← Accueil</Link>
-      <p className="eyebrow">Brouillon à compléter et vérifier avant publication</p>
+      <p className="eyebrow">Projet à compléter et vérifier juridiquement</p>
       <h1>Politique de confidentialité</h1>
-      <p className="legal-warning">Cette page décrit des constats faits dans le code de la démo. Elle ne vaut pas confirmation des traitements de Vercel, de Google ou d’autres prestataires. Compléter les éléments entre crochets et faire vérifier les informations et obligations applicables avant publication.</p>
+      <p className="legal-warning">Cette page décrit des constats faits dans le code de la démo. Elle ne vaut pas confirmation des traitements de Vercel, de Google ou d’autres prestataires. Les éléments restant entre crochets et les obligations applicables doivent être vérifiés avant finalisation.</p>
 
       <h2>1. Responsable du traitement</h2>
-      <p><strong>Lucas DÉCÉBAL-DANGER, exploitation en nom personnel</strong>. Statut, adresse et éventuelles informations sur un représentant : <strong>[À COMPLÉTER ou confirmer leur applicabilité avant publication]</strong>. Point de contact pour les questions de confidentialité : <strong>[À COMPLÉTER : adresse ou autre canal réellement surveillé]</strong>.</p>
+      <p><strong>Lucas DÉCÉBAL-DANGER, exploitation professionnelle en nom personnel</strong>, établi en France, en Île-de-France, dans le Val-d’Oise. Statut juridique précis, adresse postale complète et éventuelles informations sur un représentant : <strong>[À COMPLÉTER ou confirmer leur applicabilité après vérification juridique]</strong>. Point de contact pour les questions de confidentialité : <a href="mailto:lucasdecebaldanger09@gmail.com">lucasdecebaldanger09@gmail.com</a>.</p>
 
       <h2>2. Fonctionnement confirmé de la démo</h2>
       <ul>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
       <p>Les modalités de demande d’accès, de rectification, d’effacement ou d’exercice d’autres droits, ainsi que les durées de conservation applicables, ne peuvent être finalisées avant identification de l’exploitant et vérification des traitements des fournisseurs. <strong>[À COMPLÉTER après examen juridique et fournisseurs : procédure, contact et durées exactes]</strong>.</p>
 
       <p>Conditions d’utilisation : consultez la <Link href="/terms">page dédiée aux conditions d’utilisation</Link>.</p>
-      <p className="legal-updated">Dernière mise à jour : [À COMPLÉTER avant publication].</p>
+      <p className="legal-updated">Dernière mise à jour : 11/10/2026 (date de publication déclarée par l’exploitant; à confirmer avant mise en ligne de cette version).</p>
       <SiteFooter note="Politique provisoire · Responsable indiqué en nom personnel : Lucas DÉCÉBAL-DANGER." />
     </main>
   );
