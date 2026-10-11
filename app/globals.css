@@ -134,8 +134,21 @@ th.sortable:hover{color:#fff}
 .progress.thick{height:9px;margin:8px 0}
 .progress.alt span{background:linear-gradient(90deg,#54c4ed,#8adcf5)}
 .season-bar{transform-origin:bottom;animation:growH 1s cubic-bezier(.2,.8,.2,1) both}
-.season-bar-wrap{cursor:pointer;transition:.25s}
+.season-bar-wrap{cursor:pointer;transition:.25s;border:0;color:inherit;background:transparent;font:inherit}
 .season-bar-wrap:hover{filter:brightness(1.2);transform:translateY(-4px)}
+.detail-trigger{color:inherit;text-align:inherit;font:inherit;cursor:pointer}
+.agent-row.detail-trigger{border:0;background:transparent;padding:0}
+.detail-trigger:focus-visible,.season-bar-wrap:focus-visible,.toggle:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.demo-notice{color:var(--muted);font-size:12px;margin:0 0 14px}
+.detail-backdrop{position:fixed;inset:0;z-index:250;background:#050811b8;display:grid;place-items:center;padding:20px;animation:pageIn .2s ease}
+.detail-panel{position:relative;width:min(100%,460px);padding:28px;background:#121c30;border:1px solid #33415f;border-radius:12px;box-shadow:0 24px 70px #000b;animation:pageIn .25s ease}
+.detail-panel h2{font:700 30px 'Barlow Condensed';margin:8px 38px 8px 0}
+.detail-panel p,.detail-panel li{color:#c3ccda;font-size:13px;line-height:1.6}
+.detail-panel ul{padding-left:20px;margin:16px 0}
+.detail-panel>small{color:var(--muted);font-size:11px}
+.detail-close{position:absolute;right:14px;top:12px;background:none;border:0;color:#c3ccda;font-size:26px;cursor:pointer}
+.demo-auth-notice{margin:24px 0;padding:18px;color:#e8edf5}
+.demo-auth-notice p{color:var(--muted);font-size:13px;margin-bottom:0}
 @keyframes growH{from{transform:scaleY(0)}}
 
 /* ---------- CARTES (maps) ---------- */
@@ -178,8 +191,9 @@ th.sortable:hover{color:#fff}
 .plan input{accent-color:var(--red)}
 
 /* ---------- PROFIL / PARAMS ---------- */
-.achv{padding:13px;background:#10192a;border-radius:7px;cursor:pointer;transition:.2s}
+.achv{padding:13px;background:#10192a;border:0;border-radius:7px;cursor:pointer;transition:.2s;text-align:left;color:inherit;font:inherit}
 .achv:hover{background:#17233a;transform:translateX(6px)}
+.toggle{padding:0}
 .set{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid var(--line)}
 .set:first-child{border-top:0}
 .set small{display:block;color:var(--muted);margin-top:3px}

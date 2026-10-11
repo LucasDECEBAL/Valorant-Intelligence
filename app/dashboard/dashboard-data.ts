@@ -30,6 +30,32 @@ export const matches: Match[] = [
   ['27/05', 'Split', 'Sova', 'Victoire', '15 / 12'], ['25/05', 'Fracture', 'Reyna', 'Défaite', '13 / 18'],
 ];
 
+export function sortMatches(rows: Match[], column: number, ascending: boolean): Match[] {
+  const direction = ascending ? 1 : -1;
+
+  return [...rows].sort((a, b) => {
+    let comparison = 0;
+
+    if (column === 0) {
+      const toDate = (value: string) => {
+        const [day, month] = value.split('/').map(Number);
+        return Date.UTC(2025, month - 1, day);
+      };
+      comparison = toDate(a[0]) - toDate(b[0]);
+    } else if (column === 4) {
+      const kdValue = (value: string) => {
+        const [kills, deaths] = value.split('/').map(Number);
+        return deaths === 0 ? kills : kills / deaths;
+      };
+      comparison = kdValue(a[4]) - kdValue(b[4]);
+    } else {
+      comparison = a[column].localeCompare(b[column], 'fr');
+    }
+
+    return comparison * direction;
+  });
+}
+
 export const fit = [
   { n: 'Omen', r: 'Contrôleur', v: 92, c: 'linear-gradient(135deg,#b84a6b,#d27c84)' },
   { n: 'Jett', r: 'Duelliste', v: 86, c: 'linear-gradient(135deg,#4c7074,#9bc0b5)' },
@@ -55,6 +81,6 @@ export const nav = [
   { id: 'dash', label: 'Tableau de bord', icon: '▦' }, { id: 'stats', label: 'Mes statistiques', icon: '↗' },
   { id: 'matchs', label: 'Matchs', icon: '☰' }, { id: 'agents', label: 'Agents', icon: '☺' },
   { id: 'cartes', label: 'Cartes', icon: '◫' }, { id: 'armes', label: 'Armes', icon: '✦' },
-  { id: 'compar', label: 'Comparaison', icon: '⇅' }, { id: 'coach', label: 'IA Coach', icon: '✺', badge: 'Nouveau' },
+  { id: 'compar', label: 'Comparaison', icon: '⇅' }, { id: 'coach', label: 'Coach démo', icon: '✺', badge: 'Nouveau' },
 ] as const;
 export type PageId = typeof nav[number]['id'] | 'profil' | 'params';

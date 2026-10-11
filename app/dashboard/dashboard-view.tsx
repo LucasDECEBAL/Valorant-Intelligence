@@ -52,6 +52,7 @@ export default function DashboardView() {
   const [season, setSeason] = useState(0);
   const [hl, setHl] = useState(-1);
   const [toast, setToast] = useState('');
+  const [detail, setDetail] = useState<{ title: string; description: string; facts: string[] } | null>(null);
   const [glow, setGlow] = useState(true);
   const [search, setSearch] = useState('');
   const [menu, setMenu] = useState<'notif' | 'user' | null>(null);
@@ -59,10 +60,10 @@ export default function DashboardView() {
   const [sort, setSort] = useState<{ i: number; asc: boolean }>({ i: 0, asc: false });
   const [mapSel, setMapSel] = useState(1);
   const [dmgTab, setDmgTab] = useState(0);
-  const [chat, setChat] = useState<{ me: boolean; t: string }[]>([{ me: false, t: "Salut ! Je suis ton coach IA. Pose-moi une question sur ta visée, ton économie ou le choix d'agent." }]);
+  const [chat, setChat] = useState<{ me: boolean; t: string }[]>([{ me: false, t: "Salut ! Je suis le coach de démonstration. Mes réponses sont préécrites et ne proviennent pas d'une véritable IA." }]);
   const [typing, setTyping] = useState(false);
   const [plan, setPlan] = useState([true, false, false, false]);
-  const [toggles, setToggles] = useState([true, false, true]);
+  const [toggles, setToggles] = useState([true, true, false]);
   const searchRef = useRef<HTMLInputElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -93,9 +94,18 @@ export default function DashboardView() {
   }, []);
 
   useEffect(() => { chatRef.current?.scrollTo({ top: 9999, behavior: 'smooth' }); }, [chat, typing]);
+  useEffect(() => {
+    if (!detail) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDetail(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [detail]);
 
   const say = (t: string) => { setToast(t); setTimeout(() => setToast(''), 2400); };
-  const go = (p: PageId) => { setPage(p); setSearch(''); window.scrollTo({ top: 0 }); };
+  const showDetail = (title: string, description: string, facts: string[]) => setDetail({ title, description, facts });
+  const go = (p: PageId) => { setPage(p); setSearch(''); setMenu(null); window.scrollTo({ top: 0 }); };
 
   /* recherche */
   const results = useMemo(() => {
@@ -110,9 +120,8 @@ export default function DashboardView() {
 
   /* tableau de matchs */
   const tableRows = useMemo(() => {
-    let r = D.matches.filter(m => filter === 'all' || m[3] === filter);
-    r = [...r].sort((a, b) => (a[sort.i] > b[sort.i] ? 1 : -1) * (sort.asc ? 1 : -1));
-    return r;
+    const filtered = D.matches.filter(m => filter === 'all' || m[3] === filter);
+    return D.sortMatches(filtered, sort.i, sort.asc);
   }, [filter, sort]);
 
   /* chat */
@@ -130,7 +139,7 @@ export default function DashboardView() {
   );
   const Rows = ({ rows }: { rows: D.Match[] }) => (
     <tbody>{rows.map((m, i) => (
-      <tr key={i} onClick={() => say(`${m[1]} · ${m[2]} — ${m[4]}`)}>
+      <tr key={`${m[0]}-${m[1]}-${i}`} onClick={() => showDetail(`${m[1]} · ${m[2]}`, `Match fictif du ${m[0]}.`, [`Résultat : ${m[3]}`, `K / D : ${m[4]}`])}>
         <td>{m[0]}</td><td>{m[1]}</td><td>{m[2]}</td>
         <td><span className={m[3] === 'Victoire' ? 'win' : 'loss'}>{m[3]}</span></td><td>{m[4]}</td>
       </tr>))}</tbody>
@@ -162,7 +171,19 @@ export default function DashboardView() {
         <div className="loader-bar"><span /></div>
       </div>
       <div className="cursor-glow" ref={glowRef} style={{ opacity: glow ? 1 : 0 }} />
-      <div className={'toast' + (toast ? ' show' : '')}>{toast}</div>
+      <div className={'toast' + (toast ? ' show' : '')} role="status">{toast}</div>
+      {detail && (
+        <div className="detail-backdrop" onClick={() => setDetail(null)}>
+          <section className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title" onClick={e => e.stopPropagation()}>
+            <button className="detail-close" onClick={() => setDetail(null)} aria-label="Fermer le détail">×</button>
+            <div className="eyebrow">Donnée de démonstration</div>
+            <h2 id="detail-title">{detail.title}</h2>
+            <p>{detail.description}</p>
+            <ul>{detail.facts.map(fact => <li key={fact}>{fact}</li>)}</ul>
+            <small>Exemple fictif, non issu d’un compte VALORANT connecté.</small>
+          </section>
+        </div>
+      )}
 
       <div className="app">
         {/* ============ SIDEBAR ============ */}
@@ -196,7 +217,7 @@ export default function DashboardView() {
               <button className="bell" onClick={() => setMenu(menu === 'notif' ? null : 'notif')}>🔔<i /></button>
               {menu === 'notif' && (
                 <div className="dropdown">
-                  <b>Notifications</b>
+                  <b>Exemples de notifications fictives</b>
                   <p>🏆 Nouveau record de K/D sur Bind</p><p>📈 +12 RR cette semaine</p><p>🤖 Ton coach a un nouveau conseil</p>
                 </div>)}
               <div className="who" onClick={() => setMenu(menu === 'user' ? null : 'user')}>
@@ -205,9 +226,9 @@ export default function DashboardView() {
               </div>
               {menu === 'user' && (
                 <div className="dropdown right">
-                  <button onClick={() => go('profil')}>Mon profil</button>
+                  <button onClick={() => go('profil')}>Profil de démonstration</button>
                   <button onClick={() => go('params')}>Paramètres</button>
-                  <Link href="/connexion">Déconnexion</Link>
+                  <Link href="/">Quitter la démo</Link>
                 </div>)}
             </div>
           </header>
@@ -226,6 +247,7 @@ export default function DashboardView() {
                 </select>
               </div>
 
+              <p className="demo-notice">Mode démonstration · Les statistiques affichées sont fictives.</p>
               <div className="grid two">
                 <Reveal className="card overview">
                   <div className="card-head"><h2>Vue d'ensemble</h2><small className="muted">{s.lab}</small></div>
@@ -257,7 +279,7 @@ export default function DashboardView() {
 
               <div className="grid two">
                 <Reveal className="card ai">
-                  <div className="card-head"><h2>IA Coach <em>— conseil du jour</em></h2></div>
+                  <div className="card-head"><h2>Coach de démonstration <em>— conseil fictif</em></h2></div>
                   <p><strong>Tu perds tes duels en fin de partie.</strong>Ton K/D baisse de 18% après le round 18. La fatigue et la précipitation semblent en cause.</p>
                   <ol>
                     <li><b>1</b>Fais une pause de 5 min entre deux parties.</li>
@@ -281,9 +303,9 @@ export default function DashboardView() {
                 <div className="card-head"><h2>Comparaison des saisons</h2><small className="muted">K/D moyen</small></div>
                 <div className="season-chart">
                   {D.seasonBars.map(b => (
-                    <div className="season-bar-wrap" key={b[0]} onClick={() => say(`${b[0]} : K/D ${b[1]}`)}>
+                    <button className="season-bar-wrap" key={b[0]} onClick={() => showDetail(b[0], 'Comparaison basée sur les chiffres de démonstration.', [`K/D moyen : ${b[1]}`])}>
                       <b>{b[1]}</b><div className={'season-bar ' + b[2]} /><small>{b[0]}</small>
-                    </div>))}
+                    </button>))}
                 </div>
               </Reveal>
 
@@ -296,11 +318,11 @@ export default function DashboardView() {
                   <div className="card-head"><h2>Agents adaptés à ton style</h2></div>
                   <div className="agent-list">
                     {D.fit.map(a => (
-                      <div className="agent-row" key={a.n} onClick={() => say(`${a.n} : ${a.v}% de compatibilité`)}>
+                      <button type="button" className="agent-row detail-trigger" key={a.n} onClick={() => showDetail(a.n, 'Compatibilité simulée à partir des données de démonstration.', [`Rôle : ${a.r}`, `Compatibilité fictive : ${a.v}%`])}>
                         <div className="agent-avatar" style={{ background: a.c }}>{a.n[0]}</div>
                         <div className="agent-info"><div>{a.n} <small>{a.r}</small><strong>{a.v}%</strong></div>
                           <div className="progress"><span className="grow" style={{ width: a.v + '%' }} /></div></div>
-                      </div>))}
+                      </button>))}
                   </div>
                 </Reveal>
               </div>
@@ -308,8 +330,8 @@ export default function DashboardView() {
               <Reveal className="pocket-card">
                 <div>
                   <div className="eyebrow">Bientôt</div>
-                  <h2>Tes stats dans ta poche</h2><p>L'application mobile arrive. Sois prévenu au lancement.</p>
-                  <button className="button small-button" onClick={() => say('✅ Tu seras prévenu au lancement !')}>Me prévenir</button>
+                  <h2>Tes stats dans ta poche</h2><p>Les inscriptions aux notifications ne sont pas encore ouvertes.</p>
+                  <button className="button small-button" onClick={() => say('Les inscriptions aux notifications ne sont pas encore ouvertes.')}>Me prévenir</button>
                 </div>
                 <div className="phone-shape"><i /><i /><i /><b /></div>
               </Reveal>
@@ -319,7 +341,7 @@ export default function DashboardView() {
             {page === 'stats' && <section className="page-in" key="stats">
               <Head eyebrow="Statistiques" l1="Tes chiffres" l2="en détail." />
               <div className="metrics four">
-                {D.stats.map(st => <div className="card hoverlift" key={st[0]} onClick={() => say(st[0])}><label className="muted">{st[0]}</label><div className="big-num">{st[1]}</div></div>)}
+                {D.stats.map(st => <button type="button" className="card hoverlift detail-trigger" key={st[0]} onClick={() => showDetail(st[0], 'Valeur fictive affichée à titre de démonstration.', [`Valeur : ${st[1]}`])}><span className="muted">{st[0]}</span><div className="big-num">{st[1]}</div></button>)}
               </div>
               <div className="card" style={{ marginTop: 18 }}>
                 <div className="card-head"><h2>Dégâts par round</h2>
@@ -344,12 +366,12 @@ export default function DashboardView() {
               <Head eyebrow="Agents" l1="Tes agents" l2="favoris." />
               <div className="grid cards3">
                 {D.agents.slice(0, 5).map(a => (
-                  <div className="card hoverlift" key={a.n} onClick={() => say(`${a.n} : ${a.p}% de tes parties`)}>
+                  <button type="button" className="card hoverlift detail-trigger" key={a.n} onClick={() => showDetail(a.n, 'Statistiques fictives de sélection en démonstration.', [`Rôle : ${a.role}`, `Part des parties : ${a.p}%`, `Compatibilité simulée : ${a.fit}%`])}>
                     <div className="agent-avatar big-av" style={{ background: a.c }}>{a.n[0]}</div>
                     <h2>{a.n}</h2><small className="muted">{a.role}</small>
                     <div className="big-num">{a.p}%</div>
                     <div className="progress"><span className="grow" style={{ width: a.fit + '%' }} /></div>
-                  </div>))}
+                  </button>))}
               </div>
             </section>}
 
@@ -364,11 +386,11 @@ export default function DashboardView() {
               <Head eyebrow="Armes" l1="Ton" l2="arsenal." />
               <div className="card"><div className="agent-list">
                 {D.guns.map(g => (
-                  <div className="agent-row" key={g[0]} onClick={() => say(`${g[0]} : ${g[1]}% des kills`)}>
+                  <button type="button" className="agent-row detail-trigger" key={g[0]} onClick={() => showDetail(g[0], 'Statistiques fictives d’utilisation en démonstration.', [`Part des éliminations : ${g[1]}%`, `Évolution affichée : ${g[2]} ce mois`])}>
                     <div className="agent-avatar" style={{ background: '#2a3250' }}>{g[0][0]}</div>
                     <div className="agent-info"><div>{g[0]} <small>{g[2]} ce mois</small><strong>{g[1]}%</strong></div>
                       <div className="progress"><span className="grow" style={{ width: g[1] * 2 + '%' }} /></div></div>
-                  </div>))}
+                  </button>))}
               </div></div>
             </section>}
 
@@ -395,7 +417,9 @@ export default function DashboardView() {
 
             {/* ================= COACH ================= */}
             {page === 'coach' && <section className="page-in" key="coach">
-              <Head eyebrow="IA Coach" l1="Pose tes" l2="questions." />
+              <Head eyebrow="Coach simulé · réponses préécrites" l1="Pose tes" l2="questions.">
+                <p>Ce coach n’est pas une véritable intelligence artificielle; ses réponses sont des exemples prédéfinis.</p>
+              </Head>
               <div className="grid two">
                 <div className="card chat">
                   <div className="chat-log" ref={chatRef}>
@@ -422,7 +446,7 @@ export default function DashboardView() {
 
             {/* ================= PROFIL ================= */}
             {page === 'profil' && <section className="page-in" key="profil">
-              <Head eyebrow="Profil" l1="Azura" l2="#EUW" />
+              <Head eyebrow="Profil de démonstration · données fictives" l1="Azura" l2="#EUW" />
               <div className="grid cards3">
                 <div className="card"><small className="muted">Rang</small><div className="big-num">Silver 3</div></div>
                 <div className="card"><small className="muted">Niveau</small><div className="big-num">128</div></div>
@@ -430,7 +454,12 @@ export default function DashboardView() {
               </div>
               <div className="card" style={{ marginTop: 18 }}>
                 <div className="card-head"><h2>Succès récents</h2></div>
-                <div className="agent-list">{D.achv.map(a => <div className="achv" key={a} onClick={() => say(a)}>{a}</div>)}</div>
+                <div className="agent-list">
+                  {D.achv.map(achievement => (
+                    <button type="button" className="achv detail-trigger" key={achievement} onClick={() => showDetail(achievement, 'Succès fictif présent dans le profil de démonstration.', ['Succès décoratif, aucune progression réelle associée.'])}>
+                      {achievement}
+                    </button>))}
+                </div>
               </div>
             </section>}
 
@@ -438,13 +467,17 @@ export default function DashboardView() {
             {page === 'params' && <section className="page-in" key="params">
               <Head eyebrow="Paramètres" l1="Ton" l2="compte." />
               <div className="card">
-                {[['Notifications', 'Recevoir les alertes de progression'], ['Effets de lumière', 'Halo qui suit le curseur'], ['Analyse hebdomadaire', 'Résumé envoyé chaque lundi']].map((t, i) => (
-                  <div className="set" key={t[0]}>
-                    <div>{t[0]}<small>{t[1]}</small></div>
-                    <div className={'toggle' + (toggles[i] ? ' on' : '')} onClick={() => {
+                {[['Notifications', 'Temporaire · choix conservé uniquement pendant cette visite'], ['Effets de lumière', 'Halo qui suit le curseur'], ['Analyse hebdomadaire', 'Indisponible en démo · aucun résumé ne sera envoyé']].map(([title, description], i) => (
+                  <div className="set" key={title}>
+                    <div>{title}<small>{description}</small></div>
+                    <button type="button" className={'toggle' + (toggles[i] ? ' on' : '')} aria-label={`${title} ${toggles[i] ? 'activé' : 'désactivé'}`} aria-pressed={toggles[i]} onClick={() => {
+                      if (i === 2) {
+                        say('L’analyse hebdomadaire n’est pas disponible en mode démo.');
+                        return;
+                      }
                       setToggles(tg => tg.map((v, j) => (j === i ? !v : v)));
                       if (i === 1) setGlow(g => !g);
-                      say(`${t[0]} ${toggles[i] ? 'désactivé' : 'activé'}`);
+                      if (i === 0) say('Préférence temporaire, non enregistrée.');
                     }} />
                   </div>))}
               </div>

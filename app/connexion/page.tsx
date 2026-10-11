@@ -1,19 +1,9 @@
 'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function Connexion() {
-  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
-  const [email, setEmail] = useState('');
-  const [pwd, setPwd] = useState('');
-  const [pseudo, setPseudo] = useState('');
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState('');
 
   /* particules en fond */
   useEffect(() => {
@@ -38,29 +28,6 @@ export default function Connexion() {
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
   }, []);
 
-  /* force du mot de passe */
-  const strength = Math.min(4, (pwd.length > 7 ? 1 : 0) + (/[A-Z]/.test(pwd) ? 1 : 0) + (/\d/.test(pwd) ? 1 : 0) + (/[^A-Za-z0-9]/.test(pwd) ? 1 : 0));
-  const strengthLabel = ['Trop court', 'Faible', 'Moyen', 'Bon', 'Excellent'][pwd ? strength : 0];
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    if (!/^\S+@\S+\.\S+$/.test(email)) return setError('Entre une adresse email valide.');
-    if (pwd.length < 6) return setError('Le mot de passe doit contenir au moins 6 caractères.');
-    if (mode === 'signup' && pseudo.trim().length < 3) return setError('Choisis un pseudo (3 caractères minimum).');
-    setLoading(true);
-
-    // TODO : branche ici ton vrai appel d'authentification
-    // ex : await fetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, pwd }) })
-    await new Promise(r => setTimeout(r, 1400));
-
-    setLoading(false);
-    setDone(true);
-    setTimeout(() => router.push('/dashboard'), 1100);
-  };
-
-  const switchMode = (m: 'login' | 'signup') => { setMode(m); setError(''); };
-
   return (
     <main className="auth-page">
       <canvas ref={canvasRef} className="landing-canvas" />
@@ -74,72 +41,19 @@ export default function Connexion() {
         <section className="auth-left">
           <Link href="/" className="landing-brand auth-logo"><i /> <span>VALORANT<br />INTELLIGENCE</span></Link>
 
-          <div className="eyebrow auth-eyebrow">Espace personnel</div>
-          <h1 className="auth-title" key={mode}>
-            <span className="hl"><span>{mode === 'login' ? 'Content de' : 'Rejoins'}</span></span>
-            <span className="hl"><span><em>{mode === 'login' ? 'te revoir.' : 'la partie.'}</em></span></span>
+          <div className="eyebrow auth-eyebrow">Démo publique</div>
+          <h1 className="auth-title">
+            <span className="hl"><span>Un aperçu</span></span>
+            <span className="hl"><span><em>sans compte.</em></span></span>
           </h1>
-          <p className="auth-sub">
-            {mode === 'login' ? 'Connecte-toi pour retrouver tes statistiques et ton coach IA.' : 'Crée ton compte gratuit et commence à analyser tes performances.'}
-          </p>
+          <p className="auth-sub">Cet espace ne propose pas encore de connexion ni de création de compte. Le tableau de bord utilise des statistiques fictives.</p>
 
-          <div className="auth-tabs">
-            <button className={mode === 'login' ? 'on' : ''} onClick={() => switchMode('login')}>Connexion</button>
-            <button className={mode === 'signup' ? 'on' : ''} onClick={() => switchMode('signup')}>Inscription</button>
-            <span className="tab-slider" style={{ transform: `translateX(${mode === 'login' ? 0 : 100}%)` }} />
+          <div className="card demo-auth-notice">
+            <strong>Aucune authentification n’est effectuée.</strong>
+            <p>N’entre pas d’adresse email ni de mot de passe. Tu peux parcourir le produit en mode démonstration.</p>
           </div>
 
-          <form onSubmit={submit} className="auth-form" noValidate>
-            {mode === 'signup' && (
-              <div className="field slide-in">
-                <input id="pseudo" value={pseudo} onChange={e => setPseudo(e.target.value)} placeholder=" " autoComplete="nickname" />
-                <label htmlFor="pseudo">Pseudo Riot</label>
-                <span className="field-icon">◉</span>
-              </div>
-            )}
-
-            <div className="field">
-              <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder=" " autoComplete="email" />
-              <label htmlFor="email">Adresse email</label>
-              <span className="field-icon">✉</span>
-            </div>
-
-            <div className="field">
-              <input id="pwd" type={show ? 'text' : 'password'} value={pwd} onChange={e => setPwd(e.target.value)} placeholder=" " autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
-              <label htmlFor="pwd">Mot de passe</label>
-              <button type="button" className="field-eye" onClick={() => setShow(s => !s)} aria-label="Afficher le mot de passe">{show ? '🙈' : '👁'}</button>
-            </div>
-
-            {mode === 'signup' && pwd && (
-              <div className="strength slide-in">
-                <div className="strength-bars">{[1, 2, 3, 4].map(n => <i key={n} className={n <= strength ? `on s${strength}` : ''} />)}</div>
-                <small>{strengthLabel}</small>
-              </div>
-            )}
-
-            {mode === 'login' && (
-              <div className="auth-row">
-                <label className="check"><input type="checkbox" defaultChecked /><span />Se souvenir de moi</label>
-                <button type="button" className="text-button" onClick={() => setError('Un email de réinitialisation sera envoyé (démo).')}>Mot de passe oublié ?</button>
-              </div>
-            )}
-
-            {error && <div className="auth-error">{error}</div>}
-
-            <button type="submit" className={'button auth-submit' + (loading ? ' loading' : '') + (done ? ' done' : '')} disabled={loading || done}>
-              {done ? '✓ Connecté' : loading ? <span className="spinner" /> : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
-            </button>
-          </form>
-
-          <div className="auth-sep"><span>ou</span></div>
-          <Link href="/dashboard" className="button ghost auth-demo">Essayer la démo sans compte →</Link>
-
-          <p className="auth-switch">
-            {mode === 'login' ? 'Pas encore de compte ?' : 'Déjà inscrit ?'}{' '}
-            <button className="text-button" onClick={() => switchMode(mode === 'login' ? 'signup' : 'login')}>
-              {mode === 'login' ? 'Créer un compte' : 'Se connecter'}
-            </button>
-          </p>
+          <Link href="/dashboard" className="button ghost auth-demo">Continuer vers la démo →</Link>
         </section>
 
         {/* ---------- VISUEL ---------- */}
