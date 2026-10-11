@@ -57,6 +57,7 @@ export default function DashboardView() {
   const [glow, setGlow] = useState(true);
   const [search, setSearch] = useState('');
   const [menu, setMenu] = useState<'notif' | 'user' | null>(null);
+  const [mobileNav, setMobileNav] = useState(false);
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState<{ i: number; asc: boolean }>({ i: 0, asc: false });
   const [mapSel, setMapSel] = useState(1);
@@ -106,7 +107,7 @@ export default function DashboardView() {
 
   const say = (t: string) => { setToast(t); setTimeout(() => setToast(''), 2400); };
   const showDetail = (title: string, description: string, facts: string[]) => setDetail({ title, description, facts });
-  const go = (p: PageId) => { setPage(p); setSearch(''); setMenu(null); window.scrollTo({ top: 0 }); };
+  const go = (p: PageId) => { setPage(p); setSearch(''); setMenu(null); setMobileNav(false); window.scrollTo({ top: 0 }); };
 
   /* recherche */
   const results = useMemo(() => {
@@ -187,6 +188,29 @@ export default function DashboardView() {
       )}
 
       <div className="app">
+        {mobileNav && (
+          <div className="mobile-nav-backdrop" onClick={() => setMobileNav(false)}>
+            <aside className="mobile-nav" aria-label="Navigation mobile" onClick={e => e.stopPropagation()}>
+              <div className="mobile-nav-head">
+                <span className="nav-label">Navigation</span>
+                <button className="mobile-nav-close" aria-label="Fermer le menu" onClick={() => setMobileNav(false)}>×</button>
+              </div>
+              <nav>
+                {D.nav.map(n => (
+                  <button key={n.id} className={page === n.id ? 'active' : ''} onClick={() => go(n.id)}>
+                    <span className="nav-icon">{n.icon}</span>{n.label}
+                    {'badge' in n && <small className="badge">{n.badge}</small>}
+                  </button>
+                ))}
+              </nav>
+              <div className="nav-label" style={{ marginTop: 18 }}>Compte</div>
+              <nav>
+                <button className={page === 'profil' ? 'active' : ''} onClick={() => go('profil')}><span className="nav-icon">◉</span>Profil</button>
+                <button className={page === 'params' ? 'active' : ''} onClick={() => go('params')}><span className="nav-icon">⚙</span>Paramètres</button>
+              </nav>
+            </aside>
+          </div>
+        )}
         {/* ============ SIDEBAR ============ */}
         <aside className="sidebar">
           <Link href="/" className="brand"><i /><span>VALORANT<br />INTELLIGENCE</span></Link>
@@ -209,6 +233,9 @@ export default function DashboardView() {
         {/* ============ MAIN ============ */}
         <div className="main">
           <header className="topbar">
+            <button className="mobile-nav-toggle" aria-label="Ouvrir le menu" aria-expanded={mobileNav} onClick={() => setMobileNav(true)}>
+              <span /><span /><span />
+            </button>
             <div className="search-wrap" onClick={e => e.stopPropagation()}>
               <input ref={searchRef} className="search" placeholder="Rechercher une carte, un agent…  ( / )" value={search} onChange={e => setSearch(e.target.value)} />
               {results.length > 0 && (
