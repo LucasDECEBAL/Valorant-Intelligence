@@ -1,44 +1,19 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
 import SiteFooter from './site-footer';
 import logoMark from '../images/valorant_intelligence1.png';
 
 export default function Home() {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const c = ref.current!, x = c.getContext('2d')!;
-    let w = 0, h = 0, raf = 0;
-    const pts = Array.from({ length: 55 }, () => ({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .0004, vy: (Math.random() - .5) * .0004 }));
-    const resize = () => { w = c.width = c.offsetWidth; h = c.height = c.offsetHeight; };
-    resize(); window.addEventListener('resize', resize);
-    const loop = () => {
-      x.clearRect(0, 0, w, h);
-      pts.forEach((p, i) => {
-        p.x = (p.x + p.vx + 1) % 1; p.y = (p.y + p.vy + 1) % 1;
-        x.fillStyle = 'rgba(255,70,85,.55)'; x.beginPath(); x.arc(p.x * w, p.y * h, 1.6, 0, 7); x.fill();
-        for (let j = i + 1; j < pts.length; j++) {
-          const d = Math.hypot((p.x - pts[j].x) * w, (p.y - pts[j].y) * h);
-          if (d < 130) { x.strokeStyle = `rgba(255,70,85,${.14 * (1 - d / 130)})`; x.beginPath(); x.moveTo(p.x * w, p.y * h); x.lineTo(pts[j].x * w, pts[j].y * h); x.stroke(); }
-        }
-      });
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, []);
-
   return (
     <main className="landing">
-      <canvas ref={ref} className="landing-canvas" />
-      <div className="landing-glow landing-glow-one" />
-      <div className="landing-glow landing-glow-two" />
-
       <nav className="landing-nav">
         <Link href="/" className="landing-brand"><Image src={logoMark} alt="" /> <span>VALORANT<br />INTELLIGENCE</span></Link>
-        <Link href="/dashboard" className="button landing-demo">Essayer la démo →</Link>
+        <div className="landing-nav-actions">
+          <Link href="/profil" className="landing-nav-link">Mon profil</Link>
+          <Link href="/rechercher" className="landing-nav-link">Rechercher un joueur</Link>
+          <Link href="/dashboard" className="button landing-demo">Essayer la démo →</Link>
+        </div>
       </nav>
 
       <section className="landing-hero">
@@ -52,7 +27,8 @@ export default function Home() {
           <p>Une lecture claire de tes performances VALORANT pour identifier tes leviers de progression, match après match.</p>
           <div className="hero-actions">
             <Link href="/dashboard" className="button big">Explorer le tableau de bord</Link>
-            <Link href="/connexion" className="button ghost big">Se connecter</Link>
+            <Link href="/profil" className="button ghost big">Mon profil · Démo</Link>
+            <Link href="/rechercher" className="button ghost big">Rechercher un joueur</Link>
           </div>
         </div>
 

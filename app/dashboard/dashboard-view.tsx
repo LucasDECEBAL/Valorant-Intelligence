@@ -8,6 +8,7 @@ import type { PageId } from './dashboard-data';
 import SiteFooter from '../site-footer';
 import logoMark from '../../images/valorant_intelligence1.png';
 import logoFull from '../../images/valorant_intelligence2.png';
+import { demoProfile, findDemoPlayer, type DemoPlayer } from '../../services/demo-player-data';
 
 /* ---------- petits utilitaires ---------- */
 function Count({ to, dec = 0, suffix = '' }: { to: number; dec?: number; suffix?: string }) {
@@ -69,10 +70,43 @@ export default function DashboardView() {
   const [typing, setTyping] = useState(false);
   const [plan, setPlan] = useState([true, false, false, false]);
   const [toggles, setToggles] = useState([true, true, false]);
+  const [player, setPlayer] = useState<DemoPlayer>(demoProfile);
   const searchRef = useRef<HTMLInputElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const s = D.seasons[season];
+  useEffect(() => {
+    const selectedId = new URLSearchParams(window.location.search).get('player');
+    setPlayer(findDemoPlayer(selectedId ?? '') ?? demoProfile);
+  }, []);
+
+  const dashboard = useMemo(() => {
+    const favoriteSet = new Set(player.favoriteAgents);
+    const agents = D.agents.map((agent, index) => ({
+      ...agent,
+      p: favoriteSet.has(agent.n) ? Math.max(10, 28 - index * 4) : Math.max(5, 14 - index),
+      fit: favoriteSet.has(agent.n) ? 90 - index * 4 : 58 + index * 3,
+    }));
+    const matches = player.matches.map(match => [match.date, match.map, match.agent, match.result, match.score] as D.Match);
+    const maps = D.maps.map((map, index) => ({
+      ...map,
+      w: player.matches.some(match => match.map === map.n) ? Math.round(parseFloat(player.winrate) + 5 - index) : Math.max(35, Math.round(parseFloat(player.winrate) - index * 2)),
+      kd: Number(player.kd) + (index % 2 === 0 ? 0.08 : -0.06),
+    }));
+    const seasons = D.seasons.map((season, index) => ({
+      ...season,
+      k: [['Rang actuel', player.rank, index === 0 ? '↑ 2 divisions' : '↑ 1 division'], ['RR actuel', String(index === 0 ? player.rr : Math.max(20, player.rr - index * 12)), '/ 100', index === 0 ? '+12 RR' : '+5 RR'], ['K/D', player.kd, '+8%'], ['Winrate', player.winrate, '+4%']] as string[][],
+    }));
+    const stats = [['Headshot %', `${Math.max(18, Math.round(Number(player.kd) * 20))}.4%`], ['Dégâts / round', String(Math.round(115 + Number(player.kd) * 24))], ['First Blood', `+${Math.round(Number(player.kd) * 16)}%`], ['Clutch', `${Math.round(20 + player.rr / 4)}%`]] as const;
+    const fit = player.favoriteAgents.map((name, index) => {
+      const source = agents.find(agent => agent.n === name) ?? agents[index];
+      return { n: name, r: source.role, v: source.fit, c: `linear-gradient(135deg,${source.c},#9bc0b5)` };
+    });
+    const compare = [['K/D', Number(player.kd), 1.05], ['Winrate', parseFloat(player.winrate), 50.2], ['Headshot %', parseFloat(stats[0][1]), 21.8], ['Dégâts / round', Number(stats[1][1]), 135]] as const;
+    const seasonBars = D.seasonBars.map((bar, index) => [bar[0], Number(player.kd) - (2 - index) * 0.08, bar[2]] as const);
+    const dmgData = D.dmgData.map(series => series.map(value => Math.round(value * (Number(player.kd) / 1.12))));
+    return { ...D, agents, matches, maps, seasons, stats, fit, compare, seasonBars, dmgData };
+  }, [player]);
+  const s = dashboard.seasons[season];
 
   /* loader */
   useEffect(() => { const t = setTimeout(() => setLoading(false), 1500); return () => clearTimeout(t); }, []);
@@ -118,16 +152,16 @@ export default function DashboardView() {
     const q = search.toLowerCase();
     const r: { l: string; go: PageId }[] = [];
     D.nav.forEach(n => n.label.toLowerCase().includes(q) && r.push({ l: `Page · ${n.label}`, go: n.id }));
-    D.agents.forEach(a => a.n.toLowerCase().includes(q) && a.role && r.push({ l: `Agent · ${a.n}`, go: 'agents' }));
-    D.maps.forEach(m => m.n.toLowerCase().includes(q) && r.push({ l: `Carte · ${m.n}`, go: 'cartes' }));
+    dashboard.agents.forEach(a => a.n.toLowerCase().includes(q) && a.role && r.push({ l: `Agent · ${a.n}`, go: 'agents' }));
+    dashboard.maps.forEach(m => m.n.toLowerCase().includes(q) && r.push({ l: `Carte · ${m.n}`, go: 'cartes' }));
     return r.slice(0, 6);
   }, [search]);
 
   /* tableau de matchs */
   const tableRows = useMemo(() => {
-    const filtered = D.matches.filter(m => filter === 'all' || m[3] === filter);
+    const filtered = dashboard.matches.filter(m => filter === 'all' || m[3] === filter);
     return D.sortMatches(filtered, sort.i, sort.asc);
-  }, [filter, sort]);
+  }, [dashboard.matches, filter, sort]);
 
   /* chat */
   const send = (q: string) => {
@@ -151,7 +185,7 @@ export default function DashboardView() {
   );
   const MapGrid = () => (
     <div className="maps">
-      {D.maps.map((m, i) => (
+      {dashboard.maps.map((m, i) => (
         <div key={m.n} className={'map' + (mapSel === i ? ' sel' : '')} onClick={() => setMapSel(i)}>
           <div style={{ background: m.c }}>{m.n[0]}</div>
           <b>{m.n}</b><small>{m.w}% victoires</small><small>K/D {m.kd}</small>
@@ -159,7 +193,7 @@ export default function DashboardView() {
     </div>
   );
   const MapDetail = () => {
-    const m = D.maps[mapSel];
+    const m = dashboard.maps[mapSel];
     return (
       <div className="map-detail" key={mapSel}>
         <b>{m.n}</b> — {m.w}% de victoires, K/D {m.kd}.
@@ -211,6 +245,11 @@ export default function DashboardView() {
                 <button className={page === 'profil' ? 'active' : ''} onClick={() => go('profil')}><span className="nav-icon">◉</span>Profil</button>
                 <button className={page === 'params' ? 'active' : ''} onClick={() => go('params')}><span className="nav-icon">⚙</span>Paramètres</button>
               </nav>
+              <div className="nav-label demo-nav-label">Parcours démo</div>
+              <nav>
+                <Link href="/profil"><span className="nav-icon">◉</span>Mon profil</Link>
+                <Link href="/rechercher"><span className="nav-icon">⌕</span>Rechercher un joueur</Link>
+              </nav>
             </aside>
           </div>
         )}
@@ -229,6 +268,11 @@ export default function DashboardView() {
           <nav>
             <button className={page === 'profil' ? 'active' : ''} onClick={() => go('profil')}><span className="nav-icon">◉</span>Profil</button>
             <button className={page === 'params' ? 'active' : ''} onClick={() => go('params')}><span className="nav-icon">⚙</span>Paramètres</button>
+          </nav>
+          <div className="nav-label demo-nav-label">Parcours démo</div>
+          <nav>
+            <Link href="/profil"><span className="nav-icon">◉</span>Mon profil</Link>
+            <Link href="/rechercher"><span className="nav-icon">⌕</span>Rechercher un joueur</Link>
           </nav>
           <div className="quote">« Les chiffres ne mentent pas, mais ils ne jouent pas à ta place. »</div>
         </aside>
@@ -253,7 +297,7 @@ export default function DashboardView() {
                 </div>)}
               <div className="who" onClick={() => setMenu(menu === 'user' ? null : 'user')}>
                 <div className="avatar">AZ</div>
-                <div><b>Azura</b><small>Silver 3</small></div>
+                <div><b>{player.riotId}</b><small>{player.rank}</small></div>
               </div>
               {menu === 'user' && (
                 <div className="dropdown right">
@@ -269,7 +313,7 @@ export default function DashboardView() {
             {page === 'dash' && <section className="page-in" key="dash">
               <div className="hero">
                 <div>
-                  <div className="eyebrow">Bienvenue, Azura</div>
+                  <div className="eyebrow">Bienvenue, {player.riotId}</div>
                   <h1 className="dh"><span className="hl"><span>Ton analyse.</span></span><span className="hl"><span><strong>Ta progression.</strong></span></span></h1>
                   <p>Voici un aperçu de tes performances sur la saison en cours.</p>
                 </div>
@@ -299,7 +343,7 @@ export default function DashboardView() {
                   <div className="donut-wrap">
                     <Donut hl={hl} setHl={setHl} />
                     <div className="legend-list">
-                      {D.agents.map((a, i) => (
+                      {dashboard.agents.map((a, i) => (
                         <div key={a.n} style={{ opacity: hl === -1 || hl === i ? 1 : .4 }} onMouseEnter={() => setHl(i)} onMouseLeave={() => setHl(-1)}>
                           <i style={{ background: a.c }} />{a.n}<b>{a.p}%</b>
                         </div>))}
@@ -333,7 +377,7 @@ export default function DashboardView() {
               <Reveal className="card season-card">
                 <div className="card-head"><h2>Comparaison des saisons</h2><small className="muted">K/D moyen</small></div>
                 <div className="season-chart">
-                  {D.seasonBars.map(b => (
+                  {dashboard.seasonBars.map(b => (
                     <button className="season-bar-wrap" key={b[0]} onClick={() => showDetail(b[0], 'Comparaison basée sur les chiffres de démonstration.', [`K/D moyen : ${b[1]}`])}>
                       <b>{b[1]}</b><div className={'season-bar ' + b[2]} /><small>{b[0]}</small>
                     </button>))}
@@ -343,12 +387,12 @@ export default function DashboardView() {
               <div className="grid two" style={{ marginTop: 18 }}>
                 <Reveal className="card match-history">
                   <div className="card-head"><h2>Historique des matchs</h2><button className="link" onClick={() => go('matchs')}>Tout voir →</button></div>
-                  <div className="table-scroll"><table><thead><tr><th>Date</th><th>Carte</th><th>Agent</th><th>Résultat</th><th>K / D</th></tr></thead><Rows rows={D.matches.slice(0, 5)} /></table></div>
+                  <div className="table-scroll"><table><thead><tr><th>Date</th><th>Carte</th><th>Agent</th><th>Résultat</th><th>K / D</th></tr></thead><Rows rows={dashboard.matches.slice(0, 5)} /></table></div>
                 </Reveal>
                 <Reveal className="card" delay={80}>
                   <div className="card-head"><h2>Agents adaptés à ton style</h2></div>
                   <div className="agent-list">
-                    {D.fit.map(a => (
+                    {dashboard.fit.map(a => (
                       <button type="button" className="agent-row detail-trigger" key={a.n} onClick={() => showDetail(a.n, 'Compatibilité simulée à partir des données de démonstration.', [`Rôle : ${a.r}`, `Compatibilité fictive : ${a.v}%`])}>
                         <div className="agent-avatar" style={{ background: a.c }}>{a.n[0]}</div>
                         <div className="agent-info"><div>{a.n} <small>{a.r}</small><strong>{a.v}%</strong></div>
@@ -372,13 +416,13 @@ export default function DashboardView() {
             {page === 'stats' && <section className="page-in" key="stats">
               <Head eyebrow="Statistiques" l1="Tes chiffres" l2="en détail." />
               <div className="metrics four">
-                {D.stats.map(st => <button type="button" className="card hoverlift detail-trigger" key={st[0]} onClick={() => showDetail(st[0], 'Valeur fictive affichée à titre de démonstration.', [`Valeur : ${st[1]}`])}><span className="muted">{st[0]}</span><div className="big-num">{st[1]}</div></button>)}
+                {dashboard.stats.map(st => <button type="button" className="card hoverlift detail-trigger" key={st[0]} onClick={() => showDetail(st[0], 'Valeur fictive affichée à titre de démonstration.', [`Valeur : ${st[1]}`])}><span className="muted">{st[0]}</span><div className="big-num">{st[1]}</div></button>)}
               </div>
               <div className="card" style={{ marginTop: 18 }}>
                 <div className="card-head"><h2>Dégâts par round</h2>
                   <div className="chips">{['7 jours', '14 jours'].map((t, i) => <button key={t} className={'chip' + (dmgTab === i ? ' on' : '')} onClick={() => setDmgTab(i)}>{t}</button>)}</div>
                 </div>
-                <DmgChart data={D.dmgData[dmgTab]} />
+                <DmgChart data={dashboard.dmgData[dmgTab]} />
               </div>
             </section>}
 
@@ -396,7 +440,7 @@ export default function DashboardView() {
             {page === 'agents' && <section className="page-in" key="agents">
               <Head eyebrow="Agents" l1="Tes agents" l2="favoris." />
               <div className="grid cards3">
-                {D.agents.slice(0, 5).map(a => (
+                {dashboard.agents.slice(0, 5).map(a => (
                   <button type="button" className="card hoverlift detail-trigger" key={a.n} onClick={() => showDetail(a.n, 'Statistiques fictives de sélection en démonstration.', [`Rôle : ${a.role}`, `Part des parties : ${a.p}%`, `Compatibilité simulée : ${a.fit}%`])}>
                     <div className="agent-avatar big-av" style={{ background: a.c }}>{a.n[0]}</div>
                     <h2>{a.n}</h2><small className="muted">{a.role}</small>
@@ -431,7 +475,7 @@ export default function DashboardView() {
               <div className="card">
                 <div className="card-head"><h2>Toi vs moyenne Silver</h2></div>
                 <div className="agent-list">
-                  {D.compare.map(c => {
+                  {dashboard.compare.map(c => {
                     const mx = Math.max(c[1], c[2]) * 1.15;
                     return (
                       <div key={c[0]} className="cmp">
@@ -477,11 +521,11 @@ export default function DashboardView() {
 
             {/* ================= PROFIL ================= */}
             {page === 'profil' && <section className="page-in" key="profil">
-              <Head eyebrow="Profil de démonstration · données fictives" l1="Azura" l2="#EUW" />
+              <Head eyebrow="Profil de démonstration · données fictives" l1={player.displayName} l2={`#${player.riotId.split('#')[1]}`} />
               <div className="grid cards3">
-                <div className="card"><small className="muted">Rang</small><div className="big-num">Silver 3</div></div>
-                <div className="card"><small className="muted">Niveau</small><div className="big-num">128</div></div>
-                <div className="card"><small className="muted">Parties</small><div className="big-num">142</div></div>
+                <div className="card"><small className="muted">Rang</small><div className="big-num">{player.rank}</div></div>
+                <div className="card"><small className="muted">RR</small><div className="big-num">{player.rr} / 100</div></div>
+                <div className="card"><small className="muted">K/D · Winrate</small><div className="big-num">{player.kd} · {player.winrate}</div></div>
               </div>
               <div className="card" style={{ marginTop: 18 }}>
                 <div className="card-head"><h2>Succès récents</h2></div>
