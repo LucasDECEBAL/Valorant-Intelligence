@@ -12,7 +12,9 @@ export default function PrivacyPage() {
       <p className="legal-warning">Cette page décrit des constats faits dans le code de la démo. Elle ne vaut pas confirmation des traitements de Vercel, de Google ou d’autres prestataires. Les éléments restant entre crochets et les obligations applicables doivent être vérifiés avant finalisation.</p>
 
       <h2>1. Responsable du traitement</h2>
-      <p><strong>Lucas DÉCÉBAL-DANGER, exploitation professionnelle en nom personnel</strong>, établi en France, en Île-de-France, dans le Val-d’Oise. Statut juridique précis, adresse postale complète et éventuelles informations sur un représentant : <strong>[À COMPLÉTER ou confirmer leur applicabilité après vérification juridique]</strong>. Point de contact pour les questions de confidentialité : <a href="mailto:lucasdecebaldanger09@gmail.com">lucasdecebaldanger09@gmail.com</a>.</p>
+      <p><strong>Lucas DÉCÉBAL-DANGER, particulier exploitant le projet à titre personnel</strong>, résidant en France, en Île-de-France, dans le Val-d’Oise. Adresse postale et autres mentions d’identification à publier : <strong>[À COMPLÉTER après vérification des obligations applicables et des options de protection de l’adresse personnelle]</strong>. Point de contact pour les questions de confidentialité : <a href="mailto:lucasdecebaldanger09@gmail.com">lucasdecebaldanger09@gmail.com</a>.</p>
+
+      <p>Le projet est actuellement proposé gratuitement à la communauté, sans publicité, abonnement ni paiement. Cette description correspond à l’intention déclarée de l’exploitant et devra être mise à jour si cela change.</p>
 
       <h2>2. Fonctionnement confirmé de la démo</h2>
       <ul>
@@ -26,7 +28,7 @@ export default function PrivacyPage() {
       <h2>3. Hébergement et services tiers à vérifier</h2>
       <p>Le site est hébergé sur Vercel. Les journaux, données techniques, durées de conservation, éventuels cookies et autres traitements opérés par Vercel ne sont pas déterminés par le seul code de l’application et doivent être confirmés à partir de la configuration et des documents du fournisseur.</p>
       <p>Le code charge les polices depuis Google Fonts. Le navigateur contacte donc un service externe pour cette ressource. Les données techniques transmises, les éventuels cookies, les transferts et les conditions du fournisseur doivent être vérifiés séparément avant de décrire ce traitement comme complet.</p>
-      <p>Aucun outil d’analyse d’audience ou mécanisme de stockage navigateur applicatif n’a été trouvé dans le code examiné. Cela ne permet pas de conclure qu’aucun journal ou traitement technique n’existe chez les fournisseurs.</p>
+      <p>Aucun outil d’analyse d’audience ou mécanisme de stockage navigateur applicatif n’a été trouvé dans le code examiné. La confirmation de cette absence sur le site publié, ainsi que les journaux et traitements techniques chez les fournisseurs, reste à vérifier.</p>
 
       <h2>4. Cookies et traceurs</h2>
       <p>Aucun mécanisme applicatif de cookie ou de traceur n’a été trouvé lors de l’examen du code. La présence éventuelle de cookies ou traceurs déposés par l’hébergement, les polices ou des outils tiers reste à vérifier dans le navigateur et auprès des fournisseurs. <strong>[À COMPLÉTER après vérification : inventaire des traceurs, finalités, base applicable et choix de consentement requis]</strong>.</p>

@@ -12,7 +12,7 @@ export default function TermsPage() {
       <p className="legal-warning">Ce document est un projet de rédaction, pas un texte juridique validé. Ne le considère pas comme final avant d’avoir complété les informations encore entre crochets et fait vérifier son applicabilité.</p>
 
       <h2>1. Exploitant du service</h2>
-      <p>Le site Valorant Intelligence est exploité à titre professionnel en nom personnel par <strong>Lucas DÉCÉBAL-DANGER</strong>, établi en France, en Île-de-France, dans le Val-d’Oise. Statut juridique précis et adresse postale complète : <strong>[À COMPLÉTER après vérification des mentions légales applicables]</strong>. Contact : <a href="mailto:lucasdecebaldanger09@gmail.com">lucasdecebaldanger09@gmail.com</a>.</p>
+      <p>Valorant Intelligence est développé et exploité à titre personnel par <strong>Lucas DÉCÉBAL-DANGER</strong>, particulier résidant en France, en Île-de-France, dans le Val-d’Oise. Le projet est actuellement gratuit et sans publicité, abonnement ni paiement. Adresse postale et autres mentions d’identification à publier : <strong>[À COMPLÉTER après vérification des obligations applicables et des options de protection de l’adresse personnelle]</strong>. Contact : <a href="mailto:lucasdecebaldanger09@gmail.com">lucasdecebaldanger09@gmail.com</a>.</p>
 
       <h2>2. Service actuellement disponible</h2>
       <p>Le site propose une démonstration publique d’une interface d’analyse de performances VALORANT. Les statistiques, profils, matchs, succès et recommandations affichés dans cette démonstration sont fictifs. Le site ne propose actuellement ni connexion à un compte Riot, ni récupération de statistiques personnelles, ni inscription aux notifications.</p>
@@ -27,7 +27,7 @@ export default function TermsPage() {
       <p>Valorant Intelligence est un projet indépendant. Il n’est ni approuvé ni parrainé par Riot Games. Les marques et éléments associés à Riot Games restent la propriété de leurs détenteurs respectifs. Cette page ne constitue pas une autorisation d’utiliser leurs marques ou contenus.</p>
 
       <h2>6. Évolutions et validation</h2>
-      <p>Ces conditions décrivent uniquement l’état actuel de la démo et devront être révisées avant l’ajout de comptes, de données Riot, de stockage, de communications ou de toute autre fonctionnalité. La version définitive et les règles impératives applicables restent à valider par l’exploitant avec un conseil juridique.</p>
+      <p>Ces conditions décrivent uniquement l’état actuel de la démo. Elles devront être révisées avant tout changement substantiel, notamment l’ajout de comptes, de données Riot, de stockage ou de monétisation. Les mentions applicables à l’exploitant particulier et la version définitive restent à vérifier; ce texte ne constitue pas une validation juridique.</p>
       <p>Politique de confidentialité : consultez la <Link href="/privacy">page dédiée à la confidentialité</Link>.</p>
 
       <p className="legal-updated">Date d’entrée en vigueur : 11/10/2026 (date de publication déclarée par l’exploitant; à confirmer avant mise en ligne de cette version).</p>
