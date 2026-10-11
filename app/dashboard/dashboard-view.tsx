@@ -1,10 +1,13 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { LineChart, Donut, DmgChart } from './charts';
 import * as D from './dashboard-data';
 import type { PageId } from './dashboard-data';
 import SiteFooter from '../site-footer';
+import logoMark from '../../images/valorant_intelligence1.png';
+import logoFull from '../../images/valorant_intelligence2.png';
 
 /* ---------- petits utilitaires ---------- */
 function Count({ to, dec = 0, suffix = '' }: { to: number; dec?: number; suffix?: string }) {
@@ -169,7 +172,7 @@ export default function DashboardView() {
     <>
       {/* loader */}
       <div className={'loader' + (loading ? '' : ' hide')}>
-        <div className="loader-logo"><i /><span>VALORANT<br />INTELLIGENCE</span></div>
+        <div className="loader-logo"><Image src={logoFull} alt="Valorant Intelligence" /></div>
         <div className="loader-bar"><span /></div>
       </div>
       <div className="cursor-glow" ref={glowRef} style={{ opacity: glow ? 1 : 0 }} />
@@ -213,7 +216,7 @@ export default function DashboardView() {
         )}
         {/* ============ SIDEBAR ============ */}
         <aside className="sidebar">
-          <Link href="/" className="brand"><i /><span>VALORANT<br />INTELLIGENCE</span></Link>
+          <Link href="/" className="brand"><Image src={logoMark} alt="" /><span>VALORANT<br />INTELLIGENCE</span></Link>
           <div className="nav-label">Menu principal</div>
           <nav>
             {D.nav.map(n => (

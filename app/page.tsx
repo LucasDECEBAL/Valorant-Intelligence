@@ -1,7 +1,9 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import SiteFooter from './site-footer';
+import logoMark from '../images/valorant_intelligence1.png';
 
 export default function Home() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -35,7 +37,7 @@ export default function Home() {
       <div className="landing-glow landing-glow-two" />
 
       <nav className="landing-nav">
-        <Link href="/" className="landing-brand"><i /> <span>VALORANT<br />INTELLIGENCE</span></Link>
+        <Link href="/" className="landing-brand"><Image src={logoMark} alt="" /> <span>VALORANT<br />INTELLIGENCE</span></Link>
         <Link href="/dashboard" className="button landing-demo">Essayer la démo →</Link>
       </nav>
 

@@ -1,7 +1,9 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import SiteFooter from '../site-footer';
+import logoMark from '../../images/valorant_intelligence1.png';
 
 export default function Connexion() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,7 +42,7 @@ export default function Connexion() {
       <div className="auth-split">
         {/* ---------- FORMULAIRE ---------- */}
         <section className="auth-left">
-          <Link href="/" className="landing-brand auth-logo"><i /> <span>VALORANT<br />INTELLIGENCE</span></Link>
+          <Link href="/" className="landing-brand auth-logo"><Image src={logoMark} alt="" /> <span>VALORANT<br />INTELLIGENCE</span></Link>
 
           <div className="eyebrow auth-eyebrow">Démo publique</div>
           <h1 className="auth-title">
